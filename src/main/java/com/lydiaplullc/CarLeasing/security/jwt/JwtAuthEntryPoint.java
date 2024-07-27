@@ -21,15 +21,19 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
             HttpServletResponse response,
             AuthenticationException authException) throws IOException, ServletException {
 
+        // 设置响应内容类型为 JSON
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        // 设置响应状态为 401 未授权
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
+        // 创建响应体
         final Map<String, Object> body = new HashMap<>();
         body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
         body.put("error", "Unauthorized");
         body.put("message", authException.getMessage());
         body.put("path", request.getServletPath());
 
+        // 将响应体写入响应输出流
         final ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(response.getOutputStream(), body);
     }

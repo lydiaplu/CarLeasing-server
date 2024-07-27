@@ -21,7 +21,9 @@ public class LeasingUserDetails implements UserDetails {
     private String password;
     private Collection<GrantedAuthority> authorities;
 
+    // 创建 LeasingUserDetails 实例的方法
     public static LeasingUserDetails buildUserDetails(User user) {
+        // 将用户角色转换为 GrantedAuthority 列表
         List<GrantedAuthority> authorities = user.getRoles()
                 .stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))

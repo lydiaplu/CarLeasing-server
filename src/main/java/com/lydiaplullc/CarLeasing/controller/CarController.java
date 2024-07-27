@@ -92,6 +92,26 @@ public class CarController {
         return ResponseEntity.ok(carResponses);
     }
 
+    @GetMapping("/all-by-checkinout-fueltype-brand-model-type")
+    public ResponseEntity<List<CarResponse>> getCarByCheckInOutDataAndFuletypeBrandModelType(
+            @RequestParam(required = false) String checkInDate,
+            @RequestParam(required = false) String checkOutDate,
+            @RequestParam(required = false) String fuelType,
+            @RequestParam(required = false) String carBrand,
+            @RequestParam(required = false) String model,
+            @RequestParam(required = false) String carType
+    ) {
+        List<Car> cars = carService.getCarByCheckInOutDataAndFuletypeBrandModelType(checkInDate, checkOutDate, fuelType, carBrand, model, carType);
+
+        List<CarResponse> carResponses = new ArrayList<>();
+        for(Car car: cars) {
+            CarResponse carResponse = getCarResponse(car);
+            carResponses.add(carResponse);
+        }
+
+        return ResponseEntity.ok(carResponses);
+    }
+
     @DeleteMapping("/delete/{carId}")
     public ResponseEntity<Void> deleteCar(@PathVariable Long carId) {
         carService.deleteCar(carId);

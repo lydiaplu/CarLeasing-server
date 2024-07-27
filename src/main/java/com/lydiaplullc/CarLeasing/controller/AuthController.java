@@ -29,8 +29,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthController {
     private final UserService userService;
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtils jwtUtils;
+    private final AuthenticationManager authenticationManager;// Spring Security 提供的身份验证管理器
+    private final JwtUtils jwtUtils; // JWT 工具类，用于生成和验证 JWT
 
     @PostMapping("/register-user")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
@@ -44,18 +44,23 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest request ) {
-
+        // 创建身份验证对象（用户名和密码）
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        // 设置安全上下文中的身份验证信息
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        // 生成 JWT
         String jwt = jwtUtils.generateJwtTokenForUser(authentication);
 
+        // 获取用户详细信息
         LeasingUserDetails userDetails = (LeasingUserDetails) authentication.getPrincipal();
+        // 获取用户角色列表
         List<String> roles = userDetails.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
+        // 返回包含用户信息和 JWT 的响应
         return ResponseEntity.ok(new JwtResponse(userDetails.getId(), userDetails.getEmail(), jwt, roles));
     }
 }

@@ -51,18 +51,22 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(AbstractHttpConfigurer::disable) // 禁用 CSRF
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint)) // 配置异常处理
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 使用无状态会话管理
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/roles/**").hasRole("ADMIN")
-                        .requestMatchers("/**").permitAll()
-                        .anyRequest()
-                        .authenticated()
+//                        .requestMatchers("/roles/**").hasRole("ADMIN")
+                        .requestMatchers("/**").permitAll() // 允许所有路径对游客开放访问
+                        .anyRequest().authenticated() // 其他任何请求都需要身份验证
                 );
 
+        // 添加 JWT 过滤器，确保在用户名密码认证过滤器之前进行 JWT 验证
+        // 设置身份验证提供者
         http.authenticationProvider(authenticationProvider());
+        // 在用户名密码认证过滤器之前添加 JWT 过滤器
         http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        // 构建安全过滤链
         return http.build();
     }
+
 }

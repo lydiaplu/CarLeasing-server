@@ -68,6 +68,10 @@ public class CarService implements ICarService{
         return carRepository.findDistinctByEveryType();
     }
 
+    public List<Car> getCarByCheckInOutDataAndFuletypeBrandModelType(String checkInDate, String checkOutDate, String fuelType, String carBrand, String model, String carType) {
+        return carRepository.findCarByCheckInOutDataAndFuletype_Brand_Model_Type(checkInDate, checkOutDate, fuelType, carBrand, model, carType);
+    }
+
     @Override
     public void deleteCar(Long carId) {
         Optional<Car> theCar = carRepository.findById(carId);
