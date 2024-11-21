@@ -40,7 +40,7 @@ public interface CarRepository extends JpaRepository<Car, Long> {
             "(:model IS NULL OR :model = '' OR c.model = :model) AND " +
             "(:carType IS NULL OR :carType = '' OR c.carType.id = :carType) AND " +
             "c.available = true AND " +
-            "(:checkInDate IS NULL OR :checkInDate = '') AND " +
-            "(:checkOutDate IS NULL OR :checkOutDate = '')")
+            "NOT EXISTS (SELECT r FROM CarRental r WHERE r.car.id = c.id AND " +
+            "r.rentalDate <= :checkOutDate AND r.returnDate >= :checkInDate)")
     List<Car> findCarByCheckInOutDataAndFuletype_Brand_Model_Type(String checkInDate, String checkOutDate, String fuelType, String carBrand, String model, String carType);
 }
