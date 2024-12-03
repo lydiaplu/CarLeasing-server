@@ -33,9 +33,13 @@ public class AuthController {
     private final JwtUtils jwtUtils; // JWT 工具类，用于生成和验证 JWT
 
     @PostMapping("/register-user")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody LoginRequest loginRequest) {
         try {
-            userService.registerUser(user);
+            User theUser = new User();
+            theUser.setEmail(loginRequest.getEmail());
+            theUser.setPassword(loginRequest.getPassword());
+
+            userService.registerUser(theUser);
             return ResponseEntity.ok("Registration successful!");
         } catch (UserAlreadyExistsException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
@@ -43,7 +47,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest request ) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest request) {
         // 创建身份验证对象（用户名和密码）
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
