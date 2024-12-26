@@ -68,8 +68,14 @@ public class CarService implements ICarService{
         return carRepository.findDistinctByEveryType();
     }
 
+    @Override
     public List<Car> getCarByCheckInOutDataAndFuletypeBrandModelType(String checkInDate, String checkOutDate, String fuelType, String carBrand, String model, String carType) {
         return carRepository.findCarByCheckInOutDataAndFuletype_Brand_Model_Type(checkInDate, checkOutDate, fuelType, carBrand, model, carType);
+    }
+
+    @Override
+    public List<Car> getCarByTypeAndBrand(List<Long> carBrand, List<Long> carType){
+        return carRepository.findCarByTypeAndBrand(carBrand, carType);
     }
 
     @Override

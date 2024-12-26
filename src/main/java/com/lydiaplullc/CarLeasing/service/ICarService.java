@@ -24,6 +24,10 @@ public interface ICarService {
 
     List<Car> getDistinctByEveryType();
 
+    List<Car> getCarByCheckInOutDataAndFuletypeBrandModelType(String checkInDate, String checkOutDate, String fuelType, String carBrand, String model, String carType);
+
+    List<Car> getCarByTypeAndBrand(List<Long> carBrand, List<Long> carType);
+
     void deleteCar(Long carId);
 
     List<String> getAllLicensePlate();

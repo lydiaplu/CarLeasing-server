@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -58,7 +60,7 @@ public class CarController {
         List<Car> cars = carService.getAllCar();
 
         List<CarResponse> carResponses = new ArrayList<>();
-        for(Car car: cars) {
+        for (Car car : cars) {
             CarResponse carResponse = getCarResponse(car);
             carResponses.add(carResponse);
         }
@@ -71,7 +73,7 @@ public class CarController {
         List<Car> cars = carService.getAllCarByGroup();
 
         List<CarResponse> carResponses = new ArrayList<>();
-        for(Car car: cars) {
+        for (Car car : cars) {
             CarResponse carResponse = getCarResponse(car);
             carResponses.add(carResponse);
         }
@@ -84,7 +86,7 @@ public class CarController {
         List<Car> cars = carService.getDistinctByEveryType();
 
         List<CarResponse> carResponses = new ArrayList<>();
-        for(Car car: cars) {
+        for (Car car : cars) {
             CarResponse carResponse = getCarResponse(car);
             carResponses.add(carResponse);
         }
@@ -104,7 +106,39 @@ public class CarController {
         List<Car> cars = carService.getCarByCheckInOutDataAndFuletypeBrandModelType(checkInDate, checkOutDate, fuelType, carBrand, model, carType);
 
         List<CarResponse> carResponses = new ArrayList<>();
-        for(Car car: cars) {
+        for (Car car : cars) {
+            CarResponse carResponse = getCarResponse(car);
+            carResponses.add(carResponse);
+        }
+
+        return ResponseEntity.ok(carResponses);
+    }
+
+    @GetMapping("/all-by-type-brand")
+    public ResponseEntity<List<CarResponse>> getCarByTypeAndBrand(
+            @RequestParam(required = false) String carBrand,
+            @RequestParam(required = false) String carType
+    ) {
+        System.out.println("carBrand" + carBrand);
+        System.out.println("carType" + carType);
+
+        // the data from front-end API is string, so have to change it to Integer
+        List<Long> carBrandList = carBrand != null && !carBrand.isEmpty()
+                ? Arrays.stream(carBrand.split(","))
+                .map(Long::parseLong)
+                .collect(Collectors.toList())
+                : null;
+
+        List<Long> carTypeList = carType !=null && !carType.isEmpty()
+                ? Arrays.stream(carType.split(","))
+                .map(Long::parseLong)
+                .collect(Collectors.toList())
+                : null;
+
+        List<Car> cars = carService.getCarByTypeAndBrand(carBrandList, carTypeList);
+
+        List<CarResponse> carResponses = new ArrayList<>();
+        for (Car car : cars) {
             CarResponse carResponse = getCarResponse(car);
             carResponses.add(carResponse);
         }
@@ -119,7 +153,7 @@ public class CarController {
     }
 
     @GetMapping("/licenseplate/all")
-    public List<String> getAllLicensePlate(){
+    public List<String> getAllLicensePlate() {
         return carService.getAllLicensePlate();
     }
 
@@ -133,17 +167,17 @@ public class CarController {
     }
 
     @GetMapping("/all-models")
-    public List<String> getAllModels(){
+    public List<String> getAllModels() {
         return carService.getAllModels();
     }
 
     @GetMapping("/all-available")
-    public List<String> getAllAvailable(){
+    public List<String> getAllAvailable() {
         return carService.getAllAvailable();
     }
 
     @GetMapping("/all-fueltype")
-    public List<String> getAllFuelType(){
+    public List<String> getAllFuelType() {
         return carService.getAllFuelType();
     }
 
@@ -152,7 +186,7 @@ public class CarController {
         CarTypeResponse carTypeResponse = CarTypeController.getCarTypeResponse(car.getCarType());
 
         List<CarPictureResponse> carPictureResponses = new ArrayList<>();
-        for(CarPicture carPicture: car.getPictures()) {
+        for (CarPicture carPicture : car.getPictures()) {
             CarPictureResponse carPictureResponse = CarPictureController.getCarPictureResponse(carPicture, null);
             carPictureResponses.add(carPictureResponse);
         }

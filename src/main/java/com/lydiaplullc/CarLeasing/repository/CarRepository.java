@@ -43,4 +43,9 @@ public interface CarRepository extends JpaRepository<Car, Long> {
             "NOT EXISTS (SELECT r FROM CarRental r WHERE r.car.id = c.id AND " +
             "r.rentalDate <= :checkOutDate AND r.returnDate >= :checkInDate)")
     List<Car> findCarByCheckInOutDataAndFuletype_Brand_Model_Type(String checkInDate, String checkOutDate, String fuelType, String carBrand, String model, String carType);
+
+    @Query("SELECT c FROM Car c WHERE " +
+            "(:carBrand IS NULL OR c.carBrand.id IN (:carBrand)) AND " +
+            "(:carType IS NULL OR c.carType.id IN (:carType))")
+    List<Car> findCarByTypeAndBrand(List<Long> carBrand, List<Long> carType);
 }
