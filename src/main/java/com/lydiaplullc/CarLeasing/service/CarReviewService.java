@@ -4,6 +4,7 @@ import com.lydiaplullc.CarLeasing.exception.ResourceNotFoundException;
 import com.lydiaplullc.CarLeasing.model.Car;
 import com.lydiaplullc.CarLeasing.model.CarReview;
 import com.lydiaplullc.CarLeasing.model.Customer;
+import com.lydiaplullc.CarLeasing.model.RentedCar;
 import com.lydiaplullc.CarLeasing.repository.CarReviewRepository;
 import com.lydiaplullc.CarLeasing.request.CarReviewRequest;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class CarReviewService implements ICarReviewService{
     private final CarReviewRepository carReviewRepository;
     private final CarService carService;
     private final CustomerService customerService;
+    private final RentedCarService rentedCarService;
 
     @Override
     public CarReview addCarReview(CarReviewRequest carReviewRequest) {
@@ -60,14 +62,21 @@ public class CarReviewService implements ICarReviewService{
         return carReviewRepository.findCarReviewByCarId(carId);
     }
 
+    @Override
+    public List<CarReview> getCarReviewByRentedId(Long rentedId) {
+        return carReviewRepository.findCarReviewByCarId(rentedId);
+    }
+
     private void setCarReviewModel(CarReview carReview, CarReviewRequest carReviewRequest) {
         Customer customer = customerService.getCustomerById(carReviewRequest.getCustomerId());
         Car car = carService.getCarById(carReviewRequest.getCarId()).get();
+        RentedCar rentedCar = rentedCarService.getRentedCarById(carReviewRequest.getRentedId());
 
         carReview.setRating(carReviewRequest.getRating());
         carReview.setComment(carReview.getComment());
         carReview.setReviewDate(carReviewRequest.getReviewDate());
         carReview.setCustomer(customer);
         carReview.setCar(car);
+        carReview.setRentedCar(rentedCar);
     }
 }

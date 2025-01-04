@@ -19,4 +19,6 @@ public interface ICarReviewService {
     List<CarReview> getCarReviewByCustomerId(Long customerId);
 
     List<CarReview> getCarReviewByCarId(Long carId);
+
+    List<CarReview> getCarReviewByRentedId(Long rentedId);
 }

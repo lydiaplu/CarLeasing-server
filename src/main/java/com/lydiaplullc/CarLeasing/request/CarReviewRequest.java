@@ -15,4 +15,5 @@ public class CarReviewRequest {
     private LocalDate reviewDate;
     private Long customerId;
     private Long carId;
+    private Long rentedId;
 }

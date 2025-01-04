@@ -10,6 +10,10 @@ import com.lydiaplullc.CarLeasing.response.CarResponse;
 import com.lydiaplullc.CarLeasing.response.CarTypeResponse;
 import com.lydiaplullc.CarLeasing.service.CarService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -144,6 +148,42 @@ public class CarController {
         }
 
         return ResponseEntity.ok(carResponses);
+    }
+
+    @GetMapping("/popular-rented")
+    public ResponseEntity<Page<CarResponse>> getCarByPopularRented(
+            @RequestParam Integer page,
+            @RequestParam Integer size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Car> cars =carService.getCarByPopularRented(pageable);
+
+        List<CarResponse> carResponses = new ArrayList<>();
+        for (Car car : cars) {
+            CarResponse carResponse = getCarResponse(car);
+            carResponses.add(carResponse);
+        }
+
+        Page<CarResponse> carResponsesPage = new PageImpl<>(carResponses, pageable, cars.getTotalElements());
+        return ResponseEntity.ok(carResponsesPage);
+    }
+
+    @GetMapping("/newest-cars")
+    public ResponseEntity<Page<CarResponse>> getNewestCar(
+            @RequestParam Integer page,
+            @RequestParam Integer size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Car> cars =carService.getNewestCar(pageable);
+
+        List<CarResponse> carResponses = new ArrayList<>();
+        for (Car car : cars) {
+            CarResponse carResponse = getCarResponse(car);
+            carResponses.add(carResponse);
+        }
+
+        Page<CarResponse> carResponsesPage = new PageImpl<>(carResponses, pageable, cars.getTotalElements());
+        return ResponseEntity.ok(carResponsesPage);
     }
 
     @DeleteMapping("/delete/{carId}")

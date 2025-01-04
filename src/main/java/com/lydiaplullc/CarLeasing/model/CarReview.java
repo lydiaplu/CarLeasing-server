@@ -32,6 +32,10 @@ public class CarReview {
     @JoinColumn(name = "car_id")
     private Car car;
 
+    @OneToOne
+    @JoinColumn(name="rented_id")
+    private RentedCar rentedCar;
+
     public CarReview() {
 
     }

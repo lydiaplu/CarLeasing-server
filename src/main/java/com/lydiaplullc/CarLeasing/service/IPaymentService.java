@@ -18,5 +18,5 @@ public interface IPaymentService {
 
     List<Payment> getPaymentByCustomerId(Long customerId);
 
-    List<Payment> getPaymentByRentalId(Long rentalId);
+    List<Payment> getPaymentByRentedId(Long rentedId);
 }

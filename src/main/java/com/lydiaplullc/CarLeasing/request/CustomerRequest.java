@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Blob;
 import java.time.LocalDate;
 
 @Data
@@ -19,8 +20,8 @@ public class CustomerRequest {
     private String email;
     private String password;
     private String driverLicenseNumber;
-//    private Blob driverLicenseFrontPhoto;
-//    private Blob driverLicenseBackPhoto;
+    private Blob driverLicenseFrontPhoto;
+    private Blob driverLicenseBackPhoto;
     private Integer creditScore;
     private Integer drivingYears;
     private String address;

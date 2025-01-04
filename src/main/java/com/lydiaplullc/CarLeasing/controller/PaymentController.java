@@ -2,9 +2,9 @@ package com.lydiaplullc.CarLeasing.controller;
 
 import com.lydiaplullc.CarLeasing.model.Payment;
 import com.lydiaplullc.CarLeasing.request.PaymentRequest;
-import com.lydiaplullc.CarLeasing.response.CarRentalResponse;
 import com.lydiaplullc.CarLeasing.response.CustomerResponse;
 import com.lydiaplullc.CarLeasing.response.PaymentResponse;
+import com.lydiaplullc.CarLeasing.response.RentedCarResponse;
 import com.lydiaplullc.CarLeasing.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -84,11 +84,11 @@ public class PaymentController {
         return ResponseEntity.ok(paymentResponses);
     }
 
-    @GetMapping("/by-rental-id/{rentalId}")
-    public ResponseEntity<List<PaymentResponse>> getPaymentsByRentalId(
-            @PathVariable Long rentalId
+    @GetMapping("/by-rented-id/{rentedId}")
+    public ResponseEntity<List<PaymentResponse>> getPaymentsByRentedId(
+            @PathVariable Long rentedId
     ) {
-        List<Payment> payments = paymentService.getPaymentByRentalId(rentalId);
+        List<Payment> payments = paymentService.getPaymentByRentedId(rentedId);
 
         List<PaymentResponse> paymentResponses = new ArrayList<>();
         for(Payment payment: payments) {
@@ -101,15 +101,16 @@ public class PaymentController {
 
     public static PaymentResponse getPaymentResponse(Payment payment) {
         CustomerResponse customerResponse = CustomerController.getCustomerResponse(payment.getCustomer());
-        CarRentalResponse carRentalResponse = CarRentalController.getCarRentalResponse(payment.getCarRental());
+        RentedCarResponse rentedCarResponse = RentedCarController.getRentedCarResponse(payment.getRentedCar());
 
         return new PaymentResponse(
                 payment.getId(),
                 payment.getAmount(),
                 payment.getPaymentDate(),
                 payment.getPaymentMethod(),
+                payment.getPaymentStatus(),
                 customerResponse,
-                carRentalResponse
+                rentedCarResponse
         );
     }
 }

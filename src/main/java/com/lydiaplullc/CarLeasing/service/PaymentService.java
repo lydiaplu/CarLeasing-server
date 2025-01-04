@@ -1,9 +1,9 @@
 package com.lydiaplullc.CarLeasing.service;
 
 import com.lydiaplullc.CarLeasing.exception.ResourceNotFoundException;
-import com.lydiaplullc.CarLeasing.model.CarRental;
 import com.lydiaplullc.CarLeasing.model.Customer;
 import com.lydiaplullc.CarLeasing.model.Payment;
+import com.lydiaplullc.CarLeasing.model.RentedCar;
 import com.lydiaplullc.CarLeasing.repository.PaymentRepository;
 import com.lydiaplullc.CarLeasing.request.PaymentRequest;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.List;
 public class PaymentService implements IPaymentService {
     private final PaymentRepository paymentRepository;
     private final CustomerService customerService;
-    private final CarRentalService carRentalService;
+    private final RentedCarService rentedCarService;
 
     @Override
     public Payment addPayment(PaymentRequest paymentRequest) {
@@ -56,18 +56,19 @@ public class PaymentService implements IPaymentService {
     }
 
     @Override
-    public List<Payment> getPaymentByRentalId(Long rentalId) {
-        return paymentRepository.findPaymentByRentalId(rentalId);
+    public List<Payment> getPaymentByRentedId(Long rentedId) {
+        return paymentRepository.findPaymentByRentedId(rentedId);
     }
 
     private void setPaymentModel(Payment payment, PaymentRequest paymentRequest) {
         Customer customer = customerService.getCustomerById(paymentRequest.getCustomerId());
-        CarRental carRental = carRentalService.getCarRentalById(paymentRequest.getRentalId());
+        RentedCar rentedCar = rentedCarService.getRentedCarById(paymentRequest.getRentedId());
 
         payment.setAmount(paymentRequest.getAmount());
         payment.setPaymentDate(paymentRequest.getPaymentDate());
         payment.setPaymentMethod(paymentRequest.getPaymentMethod());
+        payment.setPaymentStatus(paymentRequest.getPaymentStatus());
         payment.setCustomer(customer);
-        payment.setCarRental(carRental);
+        payment.setRentedCar(rentedCar);
     }
 }

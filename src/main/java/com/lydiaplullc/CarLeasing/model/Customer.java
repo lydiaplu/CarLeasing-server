@@ -71,11 +71,6 @@ public class Customer {
 
     @OneToMany(mappedBy = "customer",
             fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
-    private List<CarRental> rentals;
-
-    @OneToMany(mappedBy = "customer",
-            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private List<CarReview> reviews;
 
@@ -84,15 +79,15 @@ public class Customer {
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
     private List<Payment> payments;
 
+    @OneToMany(mappedBy = "customer",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private List<RentedCar> rentedCars;
+
     public Customer() {
-        this.rentals = new ArrayList<>();
         this.reviews = new ArrayList<>();
         this.payments = new ArrayList<>();
-    }
-
-    public void addRentals(CarRental rental) {
-        this.rentals.add(rental);
-        rental.setCustomer(this);
+        this.rentedCars = new ArrayList<>();
     }
 
     public void addReviews(CarReview review) {
@@ -103,5 +98,10 @@ public class Customer {
     public void addPayment(Payment payment) {
         this.payments.add(payment);
         payment.setCustomer(this);
+    }
+
+    public void  addBookedCars(RentedCar rentedCar) {
+        this.rentedCars.add(rentedCar);
+        rentedCar.setCustomer(this);
     }
 }

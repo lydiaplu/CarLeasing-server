@@ -12,4 +12,7 @@ public interface CarReviewRepository extends JpaRepository<CarReview, Long> {
 
     @Query("SELECT cr FROM CarReview cr WHERE cr.car.id = :carId")
     List<CarReview> findCarReviewByCarId(Long carId);
+
+    @Query("SELECT cr FROM CarReview cr WHERE cr.rentedCar.id = :rentedId")
+    List<CarReview> findCarReviewByRentedId(Long rentedId);
 }

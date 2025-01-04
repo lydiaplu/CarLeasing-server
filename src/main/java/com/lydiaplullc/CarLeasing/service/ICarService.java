@@ -2,6 +2,8 @@ package com.lydiaplullc.CarLeasing.service;
 
 import com.lydiaplullc.CarLeasing.model.Car;
 import com.lydiaplullc.CarLeasing.request.CarRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -27,6 +29,10 @@ public interface ICarService {
     List<Car> getCarByCheckInOutDataAndFuletypeBrandModelType(String checkInDate, String checkOutDate, String fuelType, String carBrand, String model, String carType);
 
     List<Car> getCarByTypeAndBrand(List<Long> carBrand, List<Long> carType);
+
+    Page<Car> getCarByPopularRented(Pageable pageable);
+
+    Page<Car> getNewestCar(Pageable pageable);
 
     void deleteCar(Long carId);
 

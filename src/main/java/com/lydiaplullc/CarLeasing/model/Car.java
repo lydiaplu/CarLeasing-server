@@ -87,18 +87,13 @@ public class Car {
 
     @OneToMany(mappedBy = "car",
             fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
-    private List<CarRental> rentals;
+            cascade = CascadeType.ALL)
+    private List<CarReview> reviews;
 
     @OneToMany(mappedBy = "car",
             fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    private List<CarReview> reviews;
-
-//    @OneToMany(mappedBy = "car",
-//            fetch = FetchType.LAZY,
-//            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
-//    private List<Payment> payments;
+    private List<RentedCar> rentedCars;
 
     public Car() {
         // 初始化car的时候，将外表初始化为数组
@@ -106,9 +101,8 @@ public class Car {
         this.maintenances = new ArrayList<>();
         this.insurances = new ArrayList<>();
         this.violations = new ArrayList<>();
-        this.rentals = new ArrayList<>();
         this.reviews = new ArrayList<>();
-//        this.payments = new ArrayList<>();
+        this.rentedCars = new ArrayList<>();
     }
 
     // 添加picture到car中
@@ -135,18 +129,13 @@ public class Car {
         violation.setCar(this);
     }
 
-    public void addRental(CarRental rental) {
-        this.rentals.add(rental);
-        rental.setCar(this);
-    }
-
     public void addReviews(CarReview review) {
         this.reviews.add(review);
         review.setCar(this);
     }
 
-//    public void addPayment(Payment payment) {
-//        this.payments.add(payment);
-//        payment.setCar(this);
-//    }
+    public void addBookedCars(RentedCar rentedCar) {
+        this.rentedCars.add(rentedCar);
+        rentedCar.setCar(this);
+    }
 }

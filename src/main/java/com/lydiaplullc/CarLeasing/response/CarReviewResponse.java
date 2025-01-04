@@ -16,13 +16,15 @@ public class CarReviewResponse {
     private String reviewDate;
     private CustomerResponse customer;
     private CarResponse car;
+    private RentedCarResponse rentedCar;
 
-    public CarReviewResponse(Long id, int rating, String comment, LocalDate reviewDate, CustomerResponse customer, CarResponse car) {
+    public CarReviewResponse(Long id, int rating, String comment, LocalDate reviewDate, CustomerResponse customer, CarResponse car, RentedCarResponse rentedCar) {
         this.id = String.valueOf(id);
         this.rating = String.valueOf(rating);
         this.comment = comment;
         this.reviewDate = reviewDate != null ? String.valueOf(reviewDate) : "";
         this.customer = customer;
         this.car = car;
+        this.rentedCar = rentedCar;
     }
 }

@@ -1,5 +1,6 @@
 package com.lydiaplullc.CarLeasing.request;
 
+import com.lydiaplullc.CarLeasing.enums.PaymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ public class PaymentRequest {
     private BigDecimal amount;
     private LocalDate paymentDate;
     private String paymentMethod;
+    private PaymentStatus paymentStatus;
     private Long customerId;
-    private Long rentalId;
+    private Long rentedId;
 }

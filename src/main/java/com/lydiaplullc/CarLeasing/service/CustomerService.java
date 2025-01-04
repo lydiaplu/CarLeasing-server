@@ -48,18 +48,21 @@ public class CustomerService implements ICustomerService {
         Customer customer = getCustomerById(id);
 
         try {
-            if (driverLicenseFrontPhoto.isEmpty() || driverLicenseBackPhoto.isEmpty()) {
-                throw new DataValidationException("Both driver license front and back photos are required.");
+//            if (driverLicenseFrontPhoto.isEmpty() || driverLicenseBackPhoto.isEmpty()) {
+//                throw new DataValidationException("Both driver license front and back photos are required.");
+//            }
+
+            if(driverLicenseFrontPhoto != null) {
+                byte[] frontPhotoBytes = driverLicenseFrontPhoto.getBytes();
+                Blob frontPhotoBlob = new SerialBlob(frontPhotoBytes);
+                customer.setDriverLicenseFrontPhoto(frontPhotoBlob);
             }
 
-            byte[] frontPhotoBytes = driverLicenseFrontPhoto.getBytes();
-            Blob frontPhotoBlob = new SerialBlob(frontPhotoBytes);
-
-            byte[] backPhotoBytes = driverLicenseBackPhoto.getBytes();
-            Blob backPhotoBlob = new SerialBlob(backPhotoBytes);
-
-            customer.setDriverLicenseFrontPhoto(frontPhotoBlob);
-            customer.setDriverLicenseBackPhoto(backPhotoBlob);
+            if(driverLicenseBackPhoto!=null) {
+                byte[] backPhotoBytes = driverLicenseBackPhoto.getBytes();
+                Blob backPhotoBlob = new SerialBlob(backPhotoBytes);
+                customer.setDriverLicenseBackPhoto(backPhotoBlob);
+            }
 
             return customerRepository.save(customer);
 

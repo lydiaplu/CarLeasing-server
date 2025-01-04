@@ -5,6 +5,7 @@ import com.lydiaplullc.CarLeasing.request.CarReviewRequest;
 import com.lydiaplullc.CarLeasing.response.CarResponse;
 import com.lydiaplullc.CarLeasing.response.CarReviewResponse;
 import com.lydiaplullc.CarLeasing.response.CustomerResponse;
+import com.lydiaplullc.CarLeasing.response.RentedCarResponse;
 import com.lydiaplullc.CarLeasing.service.CarReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -102,9 +103,25 @@ public class CarReviewController {
         return ResponseEntity.ok(carReviewResponses);
     }
 
+    @GetMapping("/by-rented-id/{rentedId}")
+    public ResponseEntity<List<CarReviewResponse>> getCarReviewByRentedId(
+            @PathVariable Long rentedId
+    ) {
+        List<CarReview> carReviews = carReviewService.getCarReviewByRentedId(rentedId);
+
+        List<CarReviewResponse> carReviewResponses = new ArrayList<>();
+        for(CarReview carReview:carReviews) {
+            CarReviewResponse carReviewResponse = getCarReviewResponse(carReview);
+            carReviewResponses.add(carReviewResponse);
+        }
+
+        return ResponseEntity.ok(carReviewResponses);
+    }
+
     public static CarReviewResponse getCarReviewResponse(CarReview carReview) {
         CustomerResponse customerResponse = CustomerController.getCustomerResponse(carReview.getCustomer());
         CarResponse carResponse = CarController.getCarResponse(carReview.getCar());
+        RentedCarResponse rentedCarResponse = RentedCarController.getRentedCarResponse(carReview.getRentedCar());
 
         return new CarReviewResponse(
                 carReview.getId(),
@@ -112,7 +129,8 @@ public class CarReviewController {
                 carReview.getComment(),
                 carReview.getReviewDate(),
                 customerResponse,
-                carResponse
+                carResponse,
+                rentedCarResponse
         );
     }
 }

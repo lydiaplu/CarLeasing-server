@@ -41,8 +41,8 @@ public class CustomerController {
     @PutMapping("/upload/driver-license-photos/{customerId}")
     public ResponseEntity<CustomerResponse> addCustomerDriverLicenseFrontAndEndPhoto(
             @PathVariable Long customerId,
-            @RequestParam MultipartFile driverLicenseFrontPhoto,
-            @RequestParam MultipartFile driverLicenseBackPhoto
+            @RequestParam(required = false) MultipartFile driverLicenseFrontPhoto,
+            @RequestParam(required = false) MultipartFile driverLicenseBackPhoto
     ) {
         Customer savedCustomer = customerService.addCustomerDriverLicenseFrontAndEndPhoto(customerId, driverLicenseFrontPhoto, driverLicenseBackPhoto);
         CustomerResponse customerResponse = getCustomerResponse(savedCustomer);

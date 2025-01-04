@@ -1,5 +1,6 @@
 package com.lydiaplullc.CarLeasing.model;
 
+import com.lydiaplullc.CarLeasing.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,16 +26,19 @@ public class Payment {
 
     private String paymentMethod;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name="payment_status", nullable = false)
+    private PaymentStatus paymentStatus = PaymentStatus.PENDING;
+
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
     @OneToOne
-    @JoinColumn(name = "rental_id")
-    private CarRental carRental;
+    @JoinColumn(name="rented_id")
+    private RentedCar rentedCar;
 
     public Payment() {
 
     }
-
 }

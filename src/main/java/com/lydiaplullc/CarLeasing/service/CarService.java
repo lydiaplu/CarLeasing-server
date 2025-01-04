@@ -9,6 +9,8 @@ import com.lydiaplullc.CarLeasing.repository.CarTypeRepository;
 import com.lydiaplullc.CarLeasing.request.CarRequest;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -76,6 +78,15 @@ public class CarService implements ICarService{
     @Override
     public List<Car> getCarByTypeAndBrand(List<Long> carBrand, List<Long> carType){
         return carRepository.findCarByTypeAndBrand(carBrand, carType);
+    }
+
+    @Override
+    public Page<Car> getCarByPopularRented(Pageable pageable) {
+        return carRepository.findCarByPopularRented(pageable);
+    }
+
+    public Page<Car> getNewestCar(Pageable pageable) {
+        return carRepository.findNewestCar(pageable);
     }
 
     @Override
