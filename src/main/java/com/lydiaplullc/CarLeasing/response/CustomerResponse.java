@@ -43,27 +43,27 @@ public class CustomerResponse {
                             Integer creditScore, Integer drivingYears, String address, String city,String state,String country,String postalCode,
                             String emergencyContactPhone, Boolean isDisabled, String disabilityDescription, LocalDateTime registrationDate) {
         this.id = String.valueOf(id);
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.middleName = middleName;
-        this.gender = gender;
+        this.firstName = firstName != null ? firstName : "";
+        this.lastName = lastName != null ? lastName : "";
+        this.middleName = middleName != null ? middleName : "";
+        this.gender = gender != null ? gender : "";
         this.dateOfBirth = dateOfBirth != null ? String.valueOf(dateOfBirth) : "";
-        this.phone = phone;
-        this.email = email;
-        this.password = password;
-        this.driverLicenseNumber = driverLicenseNumber;
-        this.driverLicenseFrontPhoto = BlobUtils.converBlobToString(driverLicenseFrontPhoto);
-        this.driverLicenseBackPhoto = BlobUtils.converBlobToString(driverLicenseBackPhoto);
-        this.creditScore = String.valueOf(creditScore);
-        this.drivingYears = String.valueOf(drivingYears);
-        this.address = address;
-        this.city = city;
-        this.state = state;
-        this.country = country;
-        this.postalCode = postalCode;
-        this.emergencyContactPhone = emergencyContactPhone;
-        this.isDisabled = isDisabled!=null ? String.valueOf(isDisabled) : "";
-        this.disabilityDescription = disabilityDescription;
+        this.phone = phone != null ? phone : "";
+        this.email = email != null ? email : "";
+        this.password = password != null ? password : "";
+        this.driverLicenseNumber = driverLicenseNumber != null ? driverLicenseNumber : "";
+        this.driverLicenseFrontPhoto = driverLicenseFrontPhoto != null ? BlobUtils.converBlobToString(driverLicenseFrontPhoto) : "";
+        this.driverLicenseBackPhoto = driverLicenseBackPhoto != null ? BlobUtils.converBlobToString(driverLicenseBackPhoto) : "";
+        this.creditScore = creditScore != null ? String.valueOf(creditScore) : "";
+        this.drivingYears = drivingYears != null ? String.valueOf(drivingYears) : "";
+        this.address = address != null ? address : "";
+        this.city = city != null ? city : "";
+        this.state = state != null ? state : "";
+        this.country = country != null ? country : "";
+        this.postalCode = postalCode != null ? postalCode : "";
+        this.emergencyContactPhone = emergencyContactPhone != null ? emergencyContactPhone : "";
+        this.isDisabled = isDisabled != null ? String.valueOf(isDisabled) : "";
+        this.disabilityDescription = disabilityDescription != null ? disabilityDescription : "";
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         this.registrationDate = registrationDate != null ? registrationDate.format(formatter) : "";

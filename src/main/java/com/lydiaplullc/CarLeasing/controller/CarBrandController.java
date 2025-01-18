@@ -54,7 +54,9 @@ public class CarBrandController {
     }
 
     @GetMapping("/carbrand/{carBrandId}")
-    public ResponseEntity<Optional<CarBrandResponse>> getCarBrandById(@PathVariable Long carBrandId) {
+    public ResponseEntity<Optional<CarBrandResponse>> getCarBrandById(
+            @PathVariable Long carBrandId
+    ) {
         Optional<CarBrand> theCarBrand = carBrandService.getCarBrandById(carBrandId);
         return theCarBrand.map(carBrand -> {
             CarBrandResponse carBrandResponse = getCarBrandResponse(carBrand);

@@ -3,6 +3,7 @@ package com.lydiaplullc.CarLeasing.controller;
 import com.lydiaplullc.CarLeasing.model.Customer;
 import com.lydiaplullc.CarLeasing.request.CustomerRequest;
 import com.lydiaplullc.CarLeasing.response.CustomerResponse;
+import com.lydiaplullc.CarLeasing.response.LoginCustomerResponse;
 import com.lydiaplullc.CarLeasing.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,12 +13,50 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/customers")
 public class CustomerController {
     private final CustomerService customerService;
+
+    @PostMapping("/register")
+    public ResponseEntity<?> registerCustomer(
+            @RequestParam String email,
+            @RequestParam String password
+    ) {
+        try {
+            Customer savedCustomer = customerService.registerCustomer(email, password);
+            LoginCustomerResponse loginCustomerResponse = new LoginCustomerResponse(
+                    savedCustomer.getId(),
+                    savedCustomer.getEmail()
+            );
+            return ResponseEntity.ok(loginCustomerResponse);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("The email already exist");
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginCustomer(
+            @RequestParam String email,
+            @RequestParam String password
+    ) {
+        try {
+            Customer customer = customerService.validateLogin(email, password);
+            if (customer != null) {
+                CustomerResponse customerResponse = getCustomerResponse(customer);
+                return ResponseEntity.ok(customerResponse);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("The email or password does not match");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("The email not exist");
+        }
+
+    }
 
     @PostMapping("/add/new-customer")
     public ResponseEntity<CustomerResponse> addCustomer(
@@ -58,12 +97,40 @@ public class CustomerController {
         return ResponseEntity.ok(customerResponse);
     }
 
+    @GetMapping("/customer-email/{email}")
+    public ResponseEntity<CustomerResponse> getCustomerByEmail(
+            @PathVariable String email
+    ) {
+        Optional<Customer> customer = customerService.getCustomerByEmail(email);
+
+        if (customer.isPresent()) {
+            CustomerResponse customerResponse = getCustomerResponse(customer.get());
+            return ResponseEntity.ok(customerResponse);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @GetMapping("/customer-driverlicensenumber/{driverLicenseNumber}")
+    public ResponseEntity<CustomerResponse> getByDriverLicenseNumber(
+            @PathVariable String driverLicenseNumber
+    ) {
+        Optional<Customer> customer = customerService.getByDriverLicenseNumber(driverLicenseNumber);
+
+        if (customer.isPresent()) {
+            CustomerResponse customerResponse = getCustomerResponse(customer.get());
+            return ResponseEntity.ok(customerResponse);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<CustomerResponse>> getAllCustomers() {
         List<Customer> customers = customerService.getAllCustomers();
 
         List<CustomerResponse> customerResponses = new ArrayList<>();
-        for(Customer customer: customers) {
+        for (Customer customer : customers) {
             CustomerResponse customerResponse = getCustomerResponse(customer);
             customerResponses.add(customerResponse);
         }

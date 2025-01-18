@@ -17,6 +17,7 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,12 +25,39 @@ public class CustomerService implements ICustomerService {
     private final CustomerRepository customerRepository;
 
     @Override
+    public Customer registerCustomer(String email, String password) {
+        getCustomerByEmail(email).ifPresent(existingCustomer -> {
+            throw new ResourceNotFoundException("Email already exists: " + email);
+        });
+
+        Customer customer = new Customer();
+        customer.setEmail(email);
+        customer.setPassword(PasswordUtil.hashPassword(password));
+        customer.setRegistrationDate(LocalDateTime.now());
+
+        return customerRepository.save(customer);
+    }
+
+    @Override
+    public Customer validateLogin(String email, String password) {
+        Customer customer = getCustomerByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with Email: " + email));
+
+        String storedPassword = customer.getPassword();
+        if (PasswordUtil.checkPassword(password, storedPassword)) {
+            return customer;
+        }
+
+        return null;
+    }
+
+    @Override
     public Customer addCustomer(CustomerRequest customerRequest) {
         Customer customer = new Customer();
         setCustomerModel(customer, customerRequest);
 
         // set and encrypted password
-        if(customerRequest.getPassword() != null && !customerRequest.getPassword().isEmpty()) {
+        if (customerRequest.getPassword() != null && !customerRequest.getPassword().isEmpty()) {
             customer.setPassword(PasswordUtil.hashPassword(customerRequest.getPassword()));
         }
         customer.setRegistrationDate(LocalDateTime.now());
@@ -52,13 +80,13 @@ public class CustomerService implements ICustomerService {
 //                throw new DataValidationException("Both driver license front and back photos are required.");
 //            }
 
-            if(driverLicenseFrontPhoto != null) {
+            if (driverLicenseFrontPhoto != null) {
                 byte[] frontPhotoBytes = driverLicenseFrontPhoto.getBytes();
                 Blob frontPhotoBlob = new SerialBlob(frontPhotoBytes);
                 customer.setDriverLicenseFrontPhoto(frontPhotoBlob);
             }
 
-            if(driverLicenseBackPhoto!=null) {
+            if (driverLicenseBackPhoto != null) {
                 byte[] backPhotoBytes = driverLicenseBackPhoto.getBytes();
                 Blob backPhotoBlob = new SerialBlob(backPhotoBytes);
                 customer.setDriverLicenseBackPhoto(backPhotoBlob);
@@ -77,6 +105,16 @@ public class CustomerService implements ICustomerService {
     public Customer getCustomerById(Long id) {
         return customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with ID: " + id));
+    }
+
+    @Override
+    public Optional<Customer> getCustomerByEmail(String email) {
+        return customerRepository.findByEmail(email);
+    }
+
+    @Override
+    public Optional<Customer> getByDriverLicenseNumber(String driverLicenseNumber) {
+        return customerRepository.findByDriverLicenseNumber(driverLicenseNumber);
     }
 
     @Override
