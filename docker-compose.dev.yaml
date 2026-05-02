@@ -1,0 +1,50 @@
+# docker compose 配置文件（开发环境）
+# 说明：这里只定义了一个后端服务 server，数据库使用宿主机（本机）的 MySQL
+services:
+  server:
+    # 构建镜像配置：不是直接拉远程镜像，而是用当前项目代码构建
+    build:
+      # 构建上下文：当前目录（通常是项目根目录）
+      context: .
+      # 构建镜像所使用的 Dockerfile 文件
+      dockerfile: Dockerfile
+
+    # 容器固定名称，方便 docker ps / docker logs / docker stop 查找
+    container_name: carleasing-server
+
+    # 容器启动依赖（当前已注释，表示不依赖 compose 里的 db 服务）
+    # 如果未来要在 compose 中同时启动数据库，可取消注释并定义 db 服务
+    # depends_on:
+    #   - db
+
+    # 端口映射：宿主机9193 -> 容器8080
+    # 访问方式：http://localhost:9193
+    ports:
+      - "9193:8080"
+
+    # 传入容器的环境变量（Spring Boot 会自动读取这些变量）
+    environment:
+      # 数据库连接地址：
+      # - host.docker.internal 表示“容器访问宿主机（你本机）”
+      # - 3306 是本机 MySQL 端口
+      # - DriveHub_car_leasing 是数据库名
+      # - useSSL=false 关闭 SSL（本地开发常用）
+      # - allowPublicKeyRetrieval=true 允许拉取公钥（某些 MySQL 认证场景需要）
+      # - serverTimezone=UTC 指定时区，避免时区告警/偏差
+      SPRING_DATASOURCE_URL: jdbc:mysql://host.docker.internal:3306/DriveHub_car_leasing?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+
+      # 数据库用户名
+      SPRING_DATASOURCE_USERNAME: root
+
+      # 数据库密码（建议生产环境不要明文写在 compose，改为 .env 或密钥管理）
+      SPRING_DATASOURCE_PASSWORD: 19920409
+
+      # 激活 Spring Profile：dev（开发环境配置）
+      SPRING_PROFILES_ACTIVE: dev
+
+    # 常用命令：
+    # 1) 首次启动或 Dockerfile/依赖有变化时（会先重新构建镜像）
+    # docker compose -f docker-compose.dev.yaml up --build
+    #
+    # 2) 仅启动已有镜像（更快）
+    # docker compose -f docker-compose.dev.yaml up
